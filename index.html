@@ -7,24 +7,24 @@
 <style>
     body {
         font-family: 'Segoe UI', sans-serif;
-        background: linear-gradient(135deg, #1e3c72, #2a5298);
+        background: #f5f7fa;
         margin: 0;
-        color: #fff;
+        color: #333;
     }
 
     .container {
         max-width: 950px;
         margin: 40px auto;
-        background: rgba(255,255,255,0.1);
-        backdrop-filter: blur(15px);
+        background: white;
         padding: 30px;
-        border-radius: 20px;
-        box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+        border-radius: 15px;
+        box-shadow: 0 10px 25px rgba(0,0,0,0.1);
     }
 
     h1 {
         text-align: center;
         margin-bottom: 25px;
+        color: #222;
     }
 
     .grid {
@@ -41,13 +41,20 @@
     label {
         margin-bottom: 5px;
         font-size: 13px;
+        font-weight: 600;
     }
 
     input, select {
         padding: 10px;
-        border-radius: 10px;
-        border: none;
+        border-radius: 8px;
+        border: 1px solid #ddd;
         outline: none;
+        transition: 0.2s;
+    }
+
+    input:focus, select:focus {
+        border-color: #007bff;
+        box-shadow: 0 0 5px rgba(0,123,255,0.3);
     }
 
     .btn-group {
@@ -58,7 +65,7 @@
 
     button {
         padding: 12px;
-        border-radius: 10px;
+        border-radius: 8px;
         border: none;
         cursor: pointer;
         font-weight: bold;
@@ -67,51 +74,52 @@
 
     .predict-btn {
         width: 100%;
-        background: linear-gradient(45deg, #00c6ff, #0072ff);
+        background: linear-gradient(45deg, #007bff, #0056b3);
         color: white;
         margin-top: 15px;
     }
 
     .predict-btn:hover {
-        transform: scale(1.05);
+        transform: scale(1.03);
     }
 
     .sample-btn {
         width: 48%;
-        background: linear-gradient(45deg, #ff7e5f, #feb47b);
+        background: #6c757d;
         color: white;
     }
 
     .sample-btn:hover {
-        transform: scale(1.05);
+        background: #495057;
     }
 
     .result {
         margin-top: 25px;
         padding: 20px;
-        border-radius: 15px;
+        border-radius: 12px;
         text-align: center;
         display: none;
-        animation: fadeIn 0.6s ease;
+        animation: fadeIn 0.5s ease;
     }
 
     .good {
-        background: rgba(40,167,69,0.2);
-        border: 2px solid #28a745;
+        background: #eafaf1;
+        border-left: 6px solid #28a745;
     }
 
     .bad {
-        background: rgba(220,53,69,0.2);
-        border: 2px solid #dc3545;
+        background: #fdecea;
+        border-left: 6px solid #dc3545;
     }
 
     .icon {
-        font-size: 40px;
+        font-size: 35px;
+        margin-bottom: 10px;
     }
 
     .bar {
         height: 10px;
-        background: #ccc;
+        background: #eee;
         border-radius: 10px;
         margin-top: 10px;
         overflow: hidden;
@@ -119,7 +127,7 @@
 
     .fill {
         height: 100%;
-        background: limegreen;
+        background: #28a745;
     }
 
     @keyframes fadeIn {
@@ -196,7 +204,7 @@ async function predict() {
         resDiv.innerHTML = `
             <div class="icon">✔</div>
             <h3>Machine is SAFE</h3>
-            Confidence: ${data.confidence}<br>
+            Confidence: ${data.confidence}
             <div class="bar"><div class="fill" style="width:${100-percent}%"></div></div>
         `;
     } else {
@@ -204,8 +212,8 @@ async function predict() {
         resDiv.innerHTML = `
             <div class="icon">⚠</div>
             <h3>Failure Risk Detected</h3>
-            Confidence: ${data.confidence}<br>
-            <div class="bar"><div class="fill" style="width:${percent}%; background:red"></div></div>
+            Confidence: ${data.confidence}
+            <div class="bar"><div class="fill" style="width:${percent}%; background:#dc3545"></div></div>
         `;
     }
 
