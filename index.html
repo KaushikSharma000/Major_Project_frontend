@@ -23,7 +23,6 @@
 
     h1 {
         text-align: center;
-        color: #333;
         margin-bottom: 20px;
     }
 
@@ -33,16 +32,28 @@
         gap: 15px;
     }
 
+    .field {
+        display: flex;
+        flex-direction: column;
+    }
+
+    label {
+        font-weight: bold;
+        margin-bottom: 5px;
+        font-size: 14px;
+        color: #333;
+    }
+
     input, select {
-        padding: 12px;
+        padding: 10px;
         border-radius: 8px;
         border: 1px solid #ccc;
-        width: 100%;
         font-size: 14px;
     }
 
     select {
         margin-top: 10px;
+        width: 100%;
     }
 
     button {
@@ -52,7 +63,6 @@
         cursor: pointer;
         margin-top: 12px;
         font-weight: bold;
-        font-size: 14px;
         transition: 0.3s;
     }
 
@@ -88,7 +98,6 @@
         text-align: center;
         font-size: 18px;
         display: none;
-        animation: fadeIn 0.5s ease-in-out;
     }
 
     .good {
@@ -108,11 +117,6 @@
         display: block;
         margin-bottom: 10px;
     }
-
-    @keyframes fadeIn {
-        from {opacity: 0;}
-        to {opacity: 1;}
-    }
 </style>
 </head>
 
@@ -122,24 +126,50 @@
     <h1>⚙️ Machine Failure Predictor</h1>
 
     <div class="grid">
-        <input id="time" placeholder="Cycle Count">
-        <input id="temp" placeholder="Temperature (°C)">
-        <input id="pressure" placeholder="Pressure (bar)">
-        <input id="vibration" placeholder="Vibration (mm/s)">
-        <input id="speed" placeholder="Speed (RPM)">
-        <input id="torque" placeholder="Torque (Nm)">
+        <div class="field">
+            <label>Cycle Count</label>
+            <input id="time">
+        </div>
+
+        <div class="field">
+            <label>Temperature (°C)</label>
+            <input id="temp">
+        </div>
+
+        <div class="field">
+            <label>Pressure (bar)</label>
+            <input id="pressure">
+        </div>
+
+        <div class="field">
+            <label>Vibration (mm/s)</label>
+            <input id="vibration">
+        </div>
+
+        <div class="field">
+            <label>Speed (RPM)</label>
+            <input id="speed">
+        </div>
+
+        <div class="field">
+            <label>Torque (Nm)</label>
+            <input id="torque">
+        </div>
     </div>
 
-    <select id="mode">
-        <option>Normal</option>
-        <option>Idle</option>
-        <option>Overload</option>
-        <option>Maintenance</option>
-    </select>
+    <div class="field">
+        <label>Operational Mode</label>
+        <select id="mode">
+            <option>Normal</option>
+            <option>Idle</option>
+            <option>Overload</option>
+            <option>Maintenance</option>
+        </select>
+    </div>
 
     <div class="btn-group">
-        <button class="sample-btn" onclick="fillGood()">✔ Favorable</button>
-        <button class="sample-btn" onclick="fillBad()">⚠ Unfavorable</button>
+        <button class="sample-btn" onclick="fillSample1()">Sample Input 1</button>
+        <button class="sample-btn" onclick="fillSample2()">Sample Input 2</button>
     </div>
 
     <button class="predict-btn" onclick="predict()">Predict</button>
@@ -148,7 +178,6 @@
 </div>
 
 <script>
-// 🔥 YOUR LIVE BACKEND URL
 const API_URL = "https://projectdeployment-production-1fc1.up.railway.app/predict";
 
 function getData() {
@@ -196,13 +225,12 @@ async function predict() {
         resDiv.style.display = "block";
 
     } catch (err) {
-        alert("❌ Error connecting to backend");
-        console.error(err);
+        alert("Error connecting to backend");
     }
 }
 
-// ✅ Favorable Sample
-function fillGood() {
+// Sample Input 1 (Safe)
+function fillSample1() {
     document.getElementById("time").value = 3000;
     document.getElementById("temp").value = 60;
     document.getElementById("pressure").value = 140;
@@ -212,8 +240,8 @@ function fillGood() {
     document.getElementById("mode").value = "Normal";
 }
 
-// ⚠ Unfavorable Sample
-function fillBad() {
+// Sample Input 2 (Risky)
+function fillSample2() {
     document.getElementById("time").value = 9000;
     document.getElementById("temp").value = 95;
     document.getElementById("pressure").value = 210;
