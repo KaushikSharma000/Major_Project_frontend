@@ -6,24 +6,25 @@
 
 <style>
     body {
-        font-family: Arial, sans-serif;
-        background: linear-gradient(135deg, #eef2f3, #dfe9f3);
+        font-family: 'Segoe UI', sans-serif;
+        background: linear-gradient(135deg, #1e3c72, #2a5298);
         margin: 0;
-        padding: 0;
+        color: #fff;
     }
 
     .container {
-        max-width: 900px;
+        max-width: 950px;
         margin: 40px auto;
-        background: white;
-        padding: 25px;
-        border-radius: 15px;
-        box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+        background: rgba(255,255,255,0.1);
+        backdrop-filter: blur(15px);
+        padding: 30px;
+        border-radius: 20px;
+        box-shadow: 0 10px 40px rgba(0,0,0,0.3);
     }
 
     h1 {
         text-align: center;
-        margin-bottom: 20px;
+        margin-bottom: 25px;
     }
 
     .grid {
@@ -38,84 +39,92 @@
     }
 
     label {
-        font-weight: bold;
         margin-bottom: 5px;
-        font-size: 14px;
-        color: #333;
+        font-size: 13px;
     }
 
     input, select {
         padding: 10px;
-        border-radius: 8px;
-        border: 1px solid #ccc;
-        font-size: 14px;
-    }
-
-    select {
-        margin-top: 10px;
-        width: 100%;
-    }
-
-    button {
-        padding: 12px;
+        border-radius: 10px;
         border: none;
-        border-radius: 8px;
-        cursor: pointer;
-        margin-top: 12px;
-        font-weight: bold;
-        transition: 0.3s;
-    }
-
-    .predict-btn {
-        background: #007bff;
-        color: white;
-        width: 100%;
-    }
-
-    .predict-btn:hover {
-        background: #0056b3;
-    }
-
-    .sample-btn {
-        background: #6c757d;
-        color: white;
-        width: 48%;
-    }
-
-    .sample-btn:hover {
-        background: #495057;
+        outline: none;
     }
 
     .btn-group {
         display: flex;
         justify-content: space-between;
+        margin-top: 15px;
+    }
+
+    button {
+        padding: 12px;
+        border-radius: 10px;
+        border: none;
+        cursor: pointer;
+        font-weight: bold;
+        transition: 0.3s;
+    }
+
+    .predict-btn {
+        width: 100%;
+        background: linear-gradient(45deg, #00c6ff, #0072ff);
+        color: white;
+        margin-top: 15px;
+    }
+
+    .predict-btn:hover {
+        transform: scale(1.05);
+    }
+
+    .sample-btn {
+        width: 48%;
+        background: linear-gradient(45deg, #ff7e5f, #feb47b);
+        color: white;
+    }
+
+    .sample-btn:hover {
+        transform: scale(1.05);
     }
 
     .result {
         margin-top: 25px;
         padding: 20px;
-        border-radius: 12px;
+        border-radius: 15px;
         text-align: center;
-        font-size: 18px;
         display: none;
+        animation: fadeIn 0.6s ease;
     }
 
     .good {
-        background: #d4edda;
-        color: #155724;
+        background: rgba(40,167,69,0.2);
         border: 2px solid #28a745;
     }
 
     .bad {
-        background: #f8d7da;
-        color: #721c24;
+        background: rgba(220,53,69,0.2);
         border: 2px solid #dc3545;
     }
 
     .icon {
-        font-size: 35px;
-        display: block;
-        margin-bottom: 10px;
+        font-size: 40px;
+    }
+
+    .bar {
+        height: 10px;
+        background: #ccc;
+        border-radius: 10px;
+        margin-top: 10px;
+        overflow: hidden;
+    }
+
+    .fill {
+        height: 100%;
+        background: limegreen;
+    }
+
+    @keyframes fadeIn {
+        from {opacity: 0; transform: translateY(10px);}
+        to {opacity: 1; transform: translateY(0);}
     }
 </style>
 </head>
@@ -126,35 +135,12 @@
     <h1>⚙️ Machine Failure Predictor</h1>
 
     <div class="grid">
-        <div class="field">
-            <label>Cycle Count</label>
-            <input id="time">
-        </div>
-
-        <div class="field">
-            <label>Temperature (°C)</label>
-            <input id="temp">
-        </div>
-
-        <div class="field">
-            <label>Pressure (bar)</label>
-            <input id="pressure">
-        </div>
-
-        <div class="field">
-            <label>Vibration (mm/s)</label>
-            <input id="vibration">
-        </div>
-
-        <div class="field">
-            <label>Speed (RPM)</label>
-            <input id="speed">
-        </div>
-
-        <div class="field">
-            <label>Torque (Nm)</label>
-            <input id="torque">
-        </div>
+        <div class="field"><label>Cycle Count</label><input id="time"></div>
+        <div class="field"><label>Temperature (°C)</label><input id="temp"></div>
+        <div class="field"><label>Pressure (bar)</label><input id="pressure"></div>
+        <div class="field"><label>Vibration (mm/s)</label><input id="vibration"></div>
+        <div class="field"><label>Speed (RPM)</label><input id="speed"></div>
+        <div class="field"><label>Torque (Nm)</label><input id="torque"></div>
     </div>
 
     <div class="field">
@@ -182,73 +168,60 @@ const API_URL = "https://projectdeployment-production-1fc1.up.railway.app/predic
 
 function getData() {
     return {
-        time_cycle_count: parseFloat(document.getElementById("time").value),
-        temperature_c: parseFloat(document.getElementById("temp").value),
-        pressure_bar: parseFloat(document.getElementById("pressure").value),
-        vibration_mm_s: parseFloat(document.getElementById("vibration").value),
-        speed_rpm: parseFloat(document.getElementById("speed").value),
-        torque_nm: parseFloat(document.getElementById("torque").value),
-        operational_mode: document.getElementById("mode").value
+        time_cycle_count: +time.value,
+        temperature_c: +temp.value,
+        pressure_bar: +pressure.value,
+        vibration_mm_s: +vibration.value,
+        speed_rpm: +speed.value,
+        torque_nm: +torque.value,
+        operational_mode: mode.value
     };
 }
 
 async function predict() {
     const resDiv = document.getElementById("result");
 
-    try {
-        const response = await fetch(API_URL, {
-            method: "POST",
-            headers: {"Content-Type": "application/json"},
-            body: JSON.stringify(getData())
-        });
+    const res = await fetch(API_URL, {
+        method: "POST",
+        headers: {"Content-Type": "application/json"},
+        body: JSON.stringify(getData())
+    });
 
-        const data = await response.json();
+    const data = await res.json();
 
-        if (data.prediction === 0) {
-            resDiv.className = "result good";
-            resDiv.innerHTML = `
-                <span class="icon">✔</span>
-                <b>Machine is SAFE</b><br><br>
-                Confidence: <b>${data.confidence}</b><br>
-                Safe Probability: ${data.safe_probability}
-            `;
-        } else {
-            resDiv.className = "result bad";
-            resDiv.innerHTML = `
-                <span class="icon">⚠</span>
-                <b>Machine Failure Risk!</b><br><br>
-                Confidence: <b>${data.confidence}</b><br>
-                Failure Probability: ${data.failure_probability}
-            `;
-        }
+    let percent = data.failure_probability * 100;
 
-        resDiv.style.display = "block";
-
-    } catch (err) {
-        alert("Error connecting to backend");
+    if (data.prediction === 0) {
+        resDiv.className = "result good";
+        resDiv.innerHTML = `
+            <div class="icon">✔</div>
+            <h3>Machine is SAFE</h3>
+            Confidence: ${data.confidence}<br>
+            <div class="bar"><div class="fill" style="width:${100-percent}%"></div></div>
+        `;
+    } else {
+        resDiv.className = "result bad";
+        resDiv.innerHTML = `
+            <div class="icon">⚠</div>
+            <h3>Failure Risk Detected</h3>
+            Confidence: ${data.confidence}<br>
+            <div class="bar"><div class="fill" style="width:${percent}%; background:red"></div></div>
+        `;
     }
+
+    resDiv.style.display = "block";
 }
 
-// Sample Input 1 (Safe)
 function fillSample1() {
-    document.getElementById("time").value = 3000;
-    document.getElementById("temp").value = 60;
-    document.getElementById("pressure").value = 140;
-    document.getElementById("vibration").value = 1.5;
-    document.getElementById("speed").value = 1500;
-    document.getElementById("torque").value = 200;
-    document.getElementById("mode").value = "Normal";
+    time.value=3000; temp.value=60; pressure.value=140;
+    vibration.value=1.5; speed.value=1500; torque.value=200;
+    mode.value="Normal";
 }
 
-// Sample Input 2 (Risky)
 function fillSample2() {
-    document.getElementById("time").value = 9000;
-    document.getElementById("temp").value = 95;
-    document.getElementById("pressure").value = 210;
-    document.getElementById("vibration").value = 4.5;
-    document.getElementById("speed").value = 1800;
-    document.getElementById("torque").value = 320;
-    document.getElementById("mode").value = "Overload";
+    time.value=9000; temp.value=95; pressure.value=210;
+    vibration.value=4.5; speed.value=1800; torque.value=320;
+    mode.value="Overload";
 }
 </script>
 
