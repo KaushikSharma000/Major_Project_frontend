@@ -102,16 +102,6 @@
         animation: fadeIn 0.5s ease;
     }
 
-    .good {
-        background: #eafaf1;
-        border-left: 6px solid #28a745;
-    }
-
-    .bad {
-        background: #fdecea;
-        border-left: 6px solid #dc3545;
-    }
-
     .icon {
         font-size: 35px;
         margin-bottom: 10px;
@@ -127,7 +117,6 @@
 
     .fill {
         height: 100%;
-        background: #28a745;
     }
 
     @keyframes fadeIn {
@@ -197,25 +186,50 @@ async function predict() {
 
     const data = await res.json();
 
-    let percent = data.failure_probability * 100;
+    let prob = data.failure_probability;
+    let percent = prob * 100;
 
-    if (data.prediction === 0) {
-        resDiv.className = "result good";
-        resDiv.innerHTML = `
-            <div class="icon">✔</div>
-            <h3>Machine is SAFE</h3>
-            Confidence: ${data.confidence}
-            <div class="bar"><div class="fill" style="width:${100-percent}%"></div></div>
-        `;
-    } else {
-        resDiv.className = "result bad";
-        resDiv.innerHTML = `
-            <div class="icon">⚠</div>
-            <h3>Failure Risk Detected</h3>
-            Confidence: ${data.confidence}
-            <div class="bar"><div class="fill" style="width:${percent}%; background:#dc3545"></div></div>
-        `;
+    let status = "";
+    let color = "";
+    let icon = "";
+
+    // 🎯 Risk Levels
+    if (prob < 0.30) {
+        status = "Low Risk";
+        color = "#28a745";
+        icon = "🟢";
+    } 
+    else if (prob < 0.60) {
+        status = "Moderate Risk";
+        color = "#ffc107";
+        icon = "🟡";
+    } 
+    else if (prob < 0.80) {
+        status = "High Risk";
+        color = "#fd7e14";
+        icon = "🟠";
+    } 
+    else {
+        status = "Critical Risk";
+        color = "#dc3545";
+        icon = "🔴";
     }
+
+    // Apply styling dynamically
+    resDiv.style.borderLeft = `6px solid ${color}`;
+    resDiv.style.background = `${color}15`;
+
+    resDiv.innerHTML = `
+        <div class="icon">${icon}</div>
+        <h3 style="color:${color}">${status}</h3>
+
+        <p>Confidence: <b>${data.confidence}</b></p>
+        <p>Failure Probability: <b>${prob}</b></p>
+
+        <div class="bar">
+            <div class="fill" style="width:${percent}%; background:${color}"></div>
+        </div>
+    `;
 
     resDiv.style.display = "block";
 }
